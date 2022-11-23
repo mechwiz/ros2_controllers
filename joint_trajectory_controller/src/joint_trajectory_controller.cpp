@@ -217,16 +217,18 @@ controller_interface::return_type JointTrajectoryController::update(
         if (
           (before_last_point || first_sample) &&
           !check_state_tolerance_per_joint(
-            state_error_, index, default_tolerances_.state_tolerance[index], false))
+            state_error_, index, default_tolerances_.state_tolerance[index], true))
         {
+          RCLCPP_WARN(get_node()->get_logger(), "State tolerance for joint %ld above was violated!", index);
           tolerance_violated_while_moving = true;
         }
         // past the final point, check that we end up inside goal tolerance
         if (
           !before_last_point &&
           !check_state_tolerance_per_joint(
-            state_error_, index, default_tolerances_.goal_state_tolerance[index], false))
+            state_error_, index, default_tolerances_.goal_state_tolerance[index], true))
         {
+          RCLCPP_INFO(get_node()->get_logger(), "Goal tolerance for joint %ld above was violated!", index);
           outside_goal_tolerance = true;
 
           if (default_tolerances_.goal_time_tolerance != 0.0)
