@@ -290,31 +290,40 @@ void Trajectory::interpolate_between_points(
       double end_vel = state_b.velocities[i];
       double end_acc = state_b.accelerations[i];
 
-      double coefficients[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-      coefficients[0] = start_pos;
-      coefficients[1] = start_vel;
-      coefficients[2] = 0.5 * start_acc;
+      // double coefficients[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      // coefficients[0] = start_pos;
+      // coefficients[1] = start_vel;
+      // coefficients[2] = 0.5 * start_acc;
       if (duration_btwn_points.seconds() != 0.0)
       {
-        coefficients[3] = (-20.0 * start_pos + 20.0 * end_pos - 3.0 * start_acc * T[2] +
-                           end_acc * T[2] - 12.0 * start_vel * T[1] - 8.0 * end_vel * T[1]) /
-                          (2.0 * T[3]);
-        coefficients[4] = (30.0 * start_pos - 30.0 * end_pos + 3.0 * start_acc * T[2] -
-                           2.0 * end_acc * T[2] + 16.0 * start_vel * T[1] + 14.0 * end_vel * T[1]) /
-                          (2.0 * T[4]);
-        coefficients[5] = (-12.0 * start_pos + 12.0 * end_pos - start_acc * T[2] + end_acc * T[2] -
-                           6.0 * start_vel * T[1] - 6.0 * end_vel * T[1]) /
-                          (2.0 * T[5]);
+        output.positions[i] = start_pos + (end_pos - start_pos) * (duration_so_far.seconds()/duration_btwn_points.seconds());
+        output.velocities[i] = start_vel + (end_vel - start_vel) * (duration_so_far.seconds()/duration_btwn_points.seconds());
+        output.accelerations[i] = start_acc + (end_acc - start_acc) * (duration_so_far.seconds()/duration_btwn_points.seconds());
+        // coefficients[3] = (-20.0 * start_pos + 20.0 * end_pos - 3.0 * start_acc * T[2] +
+        //                    end_acc * T[2] - 12.0 * start_vel * T[1] - 8.0 * end_vel * T[1]) /
+        //                   (2.0 * T[3]);
+        // coefficients[4] = (30.0 * start_pos - 30.0 * end_pos + 3.0 * start_acc * T[2] -
+        //                    2.0 * end_acc * T[2] + 16.0 * start_vel * T[1] + 14.0 * end_vel * T[1]) /
+        //                   (2.0 * T[4]);
+        // coefficients[5] = (-12.0 * start_pos + 12.0 * end_pos - start_acc * T[2] + end_acc * T[2] -
+        //                    6.0 * start_vel * T[1] - 6.0 * end_vel * T[1]) /
+        //                   (2.0 * T[5]);
+      }
+      else
+      {
+        output.positions[i] = start_pos;
+        output.velocities[i] = start_vel;
+        output.accelerations[i] = start_acc;
       }
 
-      output.positions[i] = t[0] * coefficients[0] + t[1] * coefficients[1] +
-                            t[2] * coefficients[2] + t[3] * coefficients[3] +
-                            t[4] * coefficients[4] + t[5] * coefficients[5];
-      output.velocities[i] = t[0] * coefficients[1] + t[1] * 2.0 * coefficients[2] +
-                             t[2] * 3.0 * coefficients[3] + t[3] * 4.0 * coefficients[4] +
-                             t[4] * 5.0 * coefficients[5];
-      output.accelerations[i] = t[0] * 2.0 * coefficients[2] + t[1] * 6.0 * coefficients[3] +
-                                t[2] * 12.0 * coefficients[4] + t[3] * 20.0 * coefficients[5];
+      // output.positions[i] = t[0] * coefficients[0] + t[1] * coefficients[1] +
+      //                       t[2] * coefficients[2] + t[3] * coefficients[3] +
+      //                       t[4] * coefficients[4] + t[5] * coefficients[5];
+      // output.velocities[i] = t[0] * coefficients[1] + t[1] * 2.0 * coefficients[2] +
+      //                        t[2] * 3.0 * coefficients[3] + t[3] * 4.0 * coefficients[4] +
+      //                        t[4] * 5.0 * coefficients[5];
+      // output.accelerations[i] = t[0] * 2.0 * coefficients[2] + t[1] * 6.0 * coefficients[3] +
+      //                           t[2] * 12.0 * coefficients[4] + t[3] * 20.0 * coefficients[5];
     }
   }
 }
