@@ -84,6 +84,13 @@ public:
   JOINT_TRAJECTORY_CONTROLLER_PUBLIC
   controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
+  /**
+   * @brief command_data_configuration. This controller parses the 'command_data' param
+   * for the controlled joints
+   */
+  JOINT_TRAJECTORY_CONTROLLER_PUBLIC
+  std::vector<std::string> command_data_configuration() const override;
+
   JOINT_TRAJECTORY_CONTROLLER_PUBLIC
   controller_interface::return_type update(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
@@ -135,6 +142,9 @@ protected:
 
   // Storing command joint names for interfaces
   std::vector<std::string> command_joint_names_;
+
+  // Arbitrary command data associated with a controller;
+  std::string command_data_;
 
   // Parameters from ROS for joint_trajectory_controller
   std::shared_ptr<ParamListener> param_listener_;
