@@ -117,6 +117,34 @@ JointTrajectoryController::state_interface_configuration() const
   return conf;
 }
 
+std::vector<std::string>
+JointTrajectoryController::command_data_configuration() const
+{
+  std::vector<std::string> command_data_list;
+
+  if (dof_ == 0)
+  {
+    fprintf(
+      stderr,
+      "During ros2_control interface configuration, degrees of freedom is not valid;"
+      " it should be positive. Actual DOF is %zu\n",
+      dof_);
+    std::exit(EXIT_FAILURE);
+  }
+
+  if (command_data_ == "none")
+  {
+    return command_data_list;
+  }
+
+  command_data_list.reserve(dof_);
+  for (const auto & joint_name : command_joint_names_)
+  {
+    command_data_list.push_back(joint_name + "/" + command_data_);
+  }
+  return command_data_list;
+}
+
 controller_interface::return_type JointTrajectoryController::update(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
@@ -687,6 +715,12 @@ controller_interface::CallbackReturn JointTrajectoryController::on_configure(
   {
     RCLCPP_ERROR(logger, "'command_interfaces' parameter is empty.");
     return CallbackReturn::FAILURE;
+  }
+
+  command_data_ = params_.command_data;
+  if (command_data_.empty())
+  {
+    command_data_ = "none";
   }
 
   // Check if only allowed interface types are used and initialize storage to avoid memory
