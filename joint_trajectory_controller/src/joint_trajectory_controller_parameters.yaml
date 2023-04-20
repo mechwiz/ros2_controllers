@@ -66,6 +66,11 @@ joint_trajectory_controller:
       one_of<>: [["splines", "none"]],
     }
   }
+  command_data: {
+    type: string,
+    default_value: "none",
+    description: "Optional data to send down to the hardware interface",
+  }
   gains:
     __map_joints:
       p: {
