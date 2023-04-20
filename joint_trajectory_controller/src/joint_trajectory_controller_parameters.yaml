@@ -71,6 +71,11 @@ joint_trajectory_controller:
     default_value: true,
     description: "If false, the last velocity point has to be zero or the goal will be rejected",
   }
+  command_data: {
+    type: string,
+    default_value: "none",
+    description: "Optional data to send down to the hardware interface",
+  }
   gains:
     __map_joints:
       p: {
