@@ -89,7 +89,7 @@ public:
    * for the controlled joints
    */
   JOINT_TRAJECTORY_CONTROLLER_PUBLIC
-  std::vector<std::string> command_data_configuration() const override;
+  std::vector<std::string> command_data_configuration() const;
 
   JOINT_TRAJECTORY_CONTROLLER_PUBLIC
   controller_interface::return_type update(
